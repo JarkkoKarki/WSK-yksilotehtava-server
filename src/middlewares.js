@@ -8,13 +8,12 @@ import multer from 'multer';
 dotenv.config();
 
 const upload = multer({
-  dest: 'uploads/',
-  limits: {
-    fileSize: 10 * 1024 * 1024, // Max file size: 10 MB
-  },
+  dest: '../uploads/',
+  limits: {fileSize: 10 * 1024 * 1024},
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
+    } else {
       const error = new Error('Only image files are allowed!');
       error.status = 400;
       cb(error, false);
