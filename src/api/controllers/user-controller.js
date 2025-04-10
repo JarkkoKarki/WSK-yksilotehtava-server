@@ -64,6 +64,7 @@ const putUser = async (req, res, next) => {
     const userId = parseInt(req.params.id, 10);
     const loggedInUserId = parseInt(res.locals.user.user_id, 10);
     const {role} = res.locals.user;
+    const {thumbnailPath} = req.file || {};
 
     if (userId !== loggedInUserId && role !== 'admin') {
       const error = new Error('You are not authorized to update this user');
@@ -74,9 +75,9 @@ const putUser = async (req, res, next) => {
     const {email, password, name} = req.body;
     const filename = req.file?.filename;
 
-    if (!email && !password && !name && !filename) {
+    if (!email && !password && !name && !filename && !thumbnailPath) {
       const error = new Error(
-        'At least one field (email, password, name, or filename) is required'
+        'At least one field (email, password, name, filename, or thumbnailPath) is required'
       );
       error.status = 400;
       return next(error);
@@ -96,6 +97,9 @@ const putUser = async (req, res, next) => {
     }
     if (filename) {
       updatedUser.filename = filename;
+    }
+    if (thumbnailPath) {
+      updatedUser.thumbnailPath = thumbnailPath;
     }
 
     const result = await updateUserById(userId, updatedUser, role);
