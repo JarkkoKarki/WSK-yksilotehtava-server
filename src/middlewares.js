@@ -8,8 +8,10 @@ import multer from 'multer';
 dotenv.config();
 
 const upload = multer({
-  dest: '../uploads/',
-  limits: {fileSize: 10 * 1024 * 1024},
+  dest: 'uploads/',
+  limits: {
+    fileSize: 10 * 1024 * 1024, // Max file size: 10 MB
+  },
   fileFilter: (req, file, cb) => {
     if (file.mimetype.startsWith('image/')) {
       cb(null, true);
@@ -21,7 +23,10 @@ const upload = multer({
   },
 });
 
-export {upload};
+// Allow multiple fields
+const uploadFields = upload.fields([{name: 'profilePicture', maxCount: 1}]);
+
+export {upload, uploadFields};
 
 export const createThumbnail = async (req, res, next) => {
   try {
