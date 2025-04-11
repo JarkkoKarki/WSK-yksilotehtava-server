@@ -1,12 +1,15 @@
 export async function fetchData(url, options = {}) {
   const response = await fetch(url, options);
-  const json = await response.json();
-  console.log(response);
-  if (!response.ok) {
-    if (json.message) {
-      throw new Error(`${json.message}, code: ${response.status}`);
-    }
-    throw new Error(` Error ${response.status} occurred!`);
+
+  // Log the raw response text
+  const responseText = await response.text();
+  console.log('Raw Response Text:', responseText);
+
+  // Check if the response is JSON
+  const contentType = response.headers.get('content-type');
+  if (!contentType || !contentType.includes('application/json')) {
+    throw new Error(`Unexpected response: ${responseText}`);
   }
-  return json;
+
+  return JSON.parse(responseText);
 }
