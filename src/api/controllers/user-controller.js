@@ -44,10 +44,30 @@ const postUser = async (req, res, next) => {
       return next(error);
     }
 
-    req.body.password = bcrypt.hashSync(req.body.password, 10);
-    const result = await addUser(req.body);
+    const {name, username, email, password} = req.body;
+    const hashedPassword = bcrypt.hashSync(password, 10);
+
+    const thumbnailPath = req.file?.thumbnailPath;
+
+    const result = await addUser({
+      name,
+      username,
+      email,
+      password: hashedPassword,
+      filename: thumbnailPath,
+    });
+
     if (result && result.user_id) {
-      res.status(201).json({message: 'New user added.', result});
+      res.status(201).json({
+        message: 'New user added.',
+        result: {
+          user_id: result.user_id,
+          name,
+          username,
+          email,
+          thumbnailPath,
+        },
+      });
     } else {
       const error = new Error('Failed to add user');
       error.status = 400;

@@ -17,7 +17,6 @@ const findUserById = async (id) => {
   }
   return rows[0];
 };
-
 const addUser = async (user) => {
   const {name, username, password, email, filename} = user;
   const sql = `INSERT INTO wsk_users_added (name, username, password, email, filename)
@@ -30,7 +29,6 @@ const addUser = async (user) => {
   }
   return {user_id: rows[0].insertId};
 };
-
 const modifyUser = async (user, id, role, loggedInUserId) => {
   const sql = promisePool.format(
     `UPDATE wsk_users_added SET ? WHERE user_id = ? ${

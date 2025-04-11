@@ -15,7 +15,10 @@ import {
 
 const userRouter = express.Router();
 
-userRouter.route('/').get(getUser).post(postUser);
+userRouter
+  .route('/')
+  .get(getUser)
+  .post(upload.single('profilePicture'), createThumbnail, postUser);
 
 userRouter
   .route('/:id')
