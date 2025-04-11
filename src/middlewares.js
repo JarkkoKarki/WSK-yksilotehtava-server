@@ -144,28 +144,3 @@ export const errorHandler = (err, req, res, next) => {
     },
   });
 };
-
-const uploadProfilePicture = async (file) => {
-  try {
-    const formData = new FormData();
-    formData.append('profilePicture', file);
-
-    const response = await axios.put(
-      'http://localhost:3000/api/v1/users/:id',
-      formData,
-      {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          Authorization: `Bearer YOUR_TOKEN_HERE`,
-        },
-      }
-    );
-
-    console.log('Upload successful:', response.data);
-  } catch (error) {
-    console.error(
-      'Error uploading profile picture:',
-      error.response?.data || error.message
-    );
-  }
-};

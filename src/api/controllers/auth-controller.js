@@ -62,6 +62,7 @@ const authUser = async (req, res, next) => {
       username: result.username,
       email: result.email,
       role: result.role,
+      filename: result.role,
     };
 
     const token = jwt.sign(userWithNoPassword, process.env.JWT_SECRET, {
