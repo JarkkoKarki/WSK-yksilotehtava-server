@@ -84,7 +84,6 @@ const putUser = async (req, res, next) => {
     const userId = parseInt(req.params.id, 10);
     const loggedInUserId = parseInt(res.locals.user.user_id, 10);
     const {role} = res.locals.user;
-    const {thumbnailPath} = req.file || {};
 
     if (userId !== loggedInUserId && role !== 'admin') {
       const error = new Error('You are not authorized to update this user');
@@ -94,6 +93,7 @@ const putUser = async (req, res, next) => {
 
     const {email, password, name} = req.body;
     const filename = req.file?.filename;
+    const thumbnailPath = req.file?.thumbnailPath;
 
     if (!email && !password && !name && !filename && !thumbnailPath) {
       const error = new Error(
@@ -104,7 +104,6 @@ const putUser = async (req, res, next) => {
     }
 
     const user = await findUserById(userId);
-
     if (!user) {
       const error = new Error('User not found');
       error.status = 404;
@@ -116,16 +115,21 @@ const putUser = async (req, res, next) => {
       updatedUser.password = bcrypt.hashSync(password, 10);
     }
     if (filename) {
-      updatedUser.filename = filename;
-    }
-    if (thumbnailPath) {
-      updatedUser.thumbnailPath = thumbnailPath;
+      updatedUser.filename = thumbnailPath;
     }
 
     const result = await updateUserById(userId, updatedUser, role);
 
     if (result) {
-      res.status(200).json({message: 'User updated successfully', updatedUser});
+      res.status(200).json({
+        message: 'User updated successfully',
+        updatedUser: {
+          email,
+          name,
+          filename,
+          thumbnailPath,
+        },
+      });
     } else {
       const error = new Error('Failed to update user');
       error.status = 400;
