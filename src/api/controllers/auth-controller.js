@@ -57,12 +57,17 @@ const authUser = async (req, res, next) => {
       return next(error);
     }
 
+    // Construct the full path for the filename
+    const filePath = result.filename
+      ? `${result.filename.replace(/\\/g, '/')}`
+      : null;
+
     const userWithNoPassword = {
       user_id: result.user_id,
       username: result.username,
       email: result.email,
       role: result.role,
-      filename: result.role,
+      filename: filePath, // Use the full path
     };
 
     const token = jwt.sign(userWithNoPassword, process.env.JWT_SECRET, {
@@ -71,8 +76,8 @@ const authUser = async (req, res, next) => {
 
     res.json({user: userWithNoPassword, token});
   } catch (error) {
+    console.error('Error in authUser:', error);
     next(error);
   }
 };
-
 export {registerUser, authUser};
