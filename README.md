@@ -33,3 +33,11 @@ This is a Node.js-based server application built with Express.js. It provides RE
 ### File Upload
 
 - **POST** `/api/v1/users` (with `profilePicture`): Upload a profile picture and generate a thumbnail.
+
+## Database
+
+This project uses a **MySQL** database to store user information.
+
+### Database Configuration
+
+The database connection is managed using a connection pool in `src/utils/database.js`.
