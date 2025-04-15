@@ -64,3 +64,52 @@ export const fetchRouteData = async (
     throw new Error('Failed to fetch route data');
   }
 };
+
+export const fetchLegsData = async (originLat, originLng, destLat, destLng) => {
+  const query = `
+    query {
+      planConnection(
+        origin: {location: {coordinate: {latitude: ${originLat}, longitude: ${originLng}}}},
+        destination: {location: {coordinate: {latitude: ${destLat}, longitude: ${destLng}}}},
+        first: 2
+      ) {
+        pageInfo {
+          endCursor
+        }
+        edges {
+          node {
+            start
+            end
+            legs {
+              startTime
+              endTime
+              mode
+              duration
+              distance
+              legGeometry {
+                points
+              }
+            }
+          }
+        }
+      }
+    }
+  `;
+
+  const options = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'digitransit-subscription-key': apiKey,
+    },
+    body: JSON.stringify({query}),
+  };
+
+  try {
+    const response = await fetchData(DIGITRANSIT_API_URL, options);
+    return response.data.planConnection;
+  } catch (error) {
+    console.error('Error fetching legs data:', error);
+    throw new Error('Failed to fetch legs data');
+  }
+};
