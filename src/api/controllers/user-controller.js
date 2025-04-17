@@ -91,13 +91,20 @@ const putUser = async (req, res, next) => {
       return next(error);
     }
 
-    const {email, password, name} = req.body;
+    const {email, password, name, username} = req.body;
     const filename = req.file?.filename;
     const thumbnailPath = req.file?.thumbnailPath;
 
-    if (!email && !password && !name && !filename && !thumbnailPath) {
+    if (
+      !email &&
+      !password &&
+      !name &&
+      !username &&
+      !filename &&
+      !thumbnailPath
+    ) {
       const error = new Error(
-        'At least one field (email, password, name, filename, or thumbnailPath) is required'
+        'At least one field (email, password, name, username, filename, or thumbnailPath) is required'
       );
       error.status = 400;
       return next(error);
@@ -110,7 +117,7 @@ const putUser = async (req, res, next) => {
       return next(error);
     }
 
-    const updatedUser = {email, name};
+    const updatedUser = {email, name, username};
     if (password) {
       updatedUser.password = bcrypt.hashSync(password, 10);
     }
@@ -126,6 +133,7 @@ const putUser = async (req, res, next) => {
         updatedUser: {
           email,
           name,
+          username,
           filename,
           thumbnailPath,
         },

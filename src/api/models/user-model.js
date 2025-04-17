@@ -120,6 +120,11 @@ const updateUserById = async (id, user, role) => {
     values.push(user.filename);
   }
 
+  if (user.username) {
+    fields.push('username = ?');
+    values.push(user.username);
+  }
+
   values.push(id);
 
   let sql;
@@ -136,7 +141,6 @@ const updateUserById = async (id, user, role) => {
 
   return result.affectedRows > 0;
 };
-
 export {
   listAllUsers,
   findUserById,
